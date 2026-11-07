@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraEvents | Discover & Register</title>
+    
+    <!-- Tailwind CSS for layout and utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom CSS Variables for Theme Management */
+        :root {
+            /* Light Theme (White & Teal) */
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #0d9488; /* Teal */
+            --accent-hover: #0f766e;
+            --accent-text: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode {
+            /* Dark Theme (Charcoal & Neon Green) */
+            --bg-main: #111827; /* Charcoal */
+            --bg-card: #1f2937;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #39ff14; /* Neon Green */
+            --accent-hover: #32e011;
+            --accent-text: #111827; /* Dark text on neon button */
+            --header-bg: rgba(17, 24, 39, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Utility classes linking to CSS Variables */
+        .theme-bg { background-color: var(--bg-main); }
+        .theme-card { background-color: var(--bg-card); border-color: var(--border-color); }
+        .theme-text { color: var(--text-main); }
+        .theme-text-muted { color: var(--text-muted); }
+        .theme-border { border-color: var(--border-color); }
+        .theme-header { background-color: var(--header-bg); backdrop-filter: blur(10px); }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--accent-text);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Input styling */
+        .theme-input {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s;
+        }
+        .theme-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px var(--accent-color);
+        }
+
+        /* Card Hover Animation */
+        .event-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Hero Background */
+        .hero-section {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-main) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            top: -50px;
+            right: -50px;
+            pointer-events: none;
+        }
+
+        /* Modal Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-content {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        /* Toast Animation */
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-show {
+            animation: slideInUp 0.4s ease forwards;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header & Navigation -->
+    <header class="theme-header fixed w-full top-0 z-50 border-b theme-border shadow-sm flex flex-col">
+        <!-- Student Info Top Bar -->
+        <div class="w-full text-center py-1.5 text-xs sm:text-sm font-semibold tracking-wider" style="background-color: var(--accent-color); color: var(--accent-text);">
+            Name: Tanisha Hossain | Roll no: 2460238
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <svg class="w-8 h-8" style="color: var(--accent-color)" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <span class="font-bold text-xl tracking-tight theme-text">AuraEvents</span>
+                </div>
+                
+                <!-- Nav & Theme Toggle -->
+                <div class="flex items-center space-x-6">
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#home" class="theme-text hover:opacity-75 font-medium text-sm transition">Home</a>
+                        <a href="#events" class="theme-text hover:opacity-75 font-medium text-sm transition">Events</a>
+                    </nav>
+                    
+                    <button id="theme-toggle" class="p-2 rounded-full theme-card border hover:opacity-80 transition" aria-label="Toggle Theme">
+                        <!-- Sun Icon (Hidden in Light Mode) -->
+                        <svg id="icon-sun" class="w-5 h-5 hidden text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <!-- Moon Icon (Visible in Light Mode) -->
+                        <svg id="icon-moon" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-16">
+        
+        <!-- Hero Section -->
+        <section id="home" class="hero-section py-20 lg:py-32">
+            <div class="hero-glow"></div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold theme-text mb-6 tracking-tight">
+                    Experience the <span style="color: var(--accent-color)">Extraordinary</span>
+                </h1>
+                <p class="theme-text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                    Discover, explore, and register for the most anticipated events, workshops, and tech summits around the globe.
+                </p>
+                
+                <!-- Countdown Timer -->
+                <div class="theme-card border theme-border rounded-2xl p-6 md:p-8 max-w-3xl mx-auto shadow-sm">
+                    <h2 class="text-lg font-semibold theme-text mb-4 uppercase tracking-wider">Next Big Event Starts In</h2>
+                    <div class="flex justify-center gap-4 md:gap-8">
+                        <div class="flex flex-col items-center">
+                            <span id="cd-days" class="text-3xl md:text-5xl font-bold" style="color: var(--accent-color)">00</span>
+                            <span class="text-xs md:text-sm font-medium theme-text-muted mt-1 uppercase">Days</span>
+                        </div>
+                        <div class="text-3xl md:text-5xl font-bold theme-text-muted">:</div>
+                        <div class="flex flex-col items-center">
+                            <span id="cd-hours" class="text-3xl md:text-5xl font-bold" style="color: var(--accent-color)">00</span>
+                            <span class="text-xs md:text-sm font-medium theme-text-muted mt-1 uppercase">Hours</span>
+                        </div>
+                        <div class="text-3xl md:text-5xl font-bold theme-text-muted">:</div>
+                        <div class="flex flex-col items-center">
+                            <span id="cd-mins" class="text-3xl md:text-5xl font-bold" style="color: var(--accent-color)">00</span>
+                            <span class="text-xs md:text-sm font-medium theme-text-muted mt-1 uppercase">Mins</span>
+                        </div>
+                        <div class="text-3xl md:text-5xl font-bold theme-text-muted">:</div>
+                        <div class="flex flex-col items-center">
+                            <span id="cd-secs" class="text-3xl md:text-5xl font-bold" style="color: var(--accent-color)">00</span>
+                            <span class="text-xs md:text-sm font-medium theme-text-muted mt-1 uppercase">Secs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="py-16 theme-bg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Search & Filter Controls -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-12">
+                    <h2 class="text-3xl font-bold theme-text">Upcoming Events</h2>
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <input type="text" id="search-input" placeholder="Search events..." class="theme-input w-full pl-10 pr-4 py-2.5 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4 absolute left-3 top-3.5 theme-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select id="category-filter" class="theme-input w-full sm:w-40 px-4 py-2.5 rounded-lg text-sm font-medium appearance-none cursor-pointer">
+                            <option value="All">All Categories</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Music">Music</option>
+                            <option value="Workshop">Workshop</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Event Cards Grid -->
+                <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Cards will be injected by JavaScript -->
+                </div>
+                
+                <!-- No Results State -->
+                <div id="no-results" class="hidden text-center py-20">
+                    <p class="text-xl theme-text-muted font-medium">No events found matching your criteria.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="theme-card border-t theme-border py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-4">
+                <svg class="w-6 h-6" style="color: var(--accent-color)" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span class="font-bold text-lg theme-text">AuraEvents</span>
+            </div>
+            <p class="theme-text-muted text-sm font-medium">
+                Designed and Developed by <span class="font-bold theme-text">Tanisha Hossain</span> | Roll no. <span class="font-bold theme-text">2460238</span>
+            </p>
+            <p class="theme-text-muted text-xs mt-2 opacity-70">
+                &copy; <span id="current-year"></span> AuraEvents. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Registration Modal Overlay -->
+    <div id="registration-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" id="modal-backdrop"></div>
+        
+        <!-- Modal Content -->
+        <div class="modal-content theme-card w-full max-w-md rounded-2xl shadow-2xl relative z-10 overflow-hidden border theme-border">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b theme-border flex justify-between items-center bg-black bg-opacity-5">
+                <h3 class="text-xl font-bold theme-text">Register for Event</h3>
+                <button id="close-modal" class="text-gray-400 hover:text-red-500 transition focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24">
+        
+        <!-- Hero Section -->
+        <section id="home" class="hero-section py-20 lg:py-32">
+            
+            <!-- Form -->
+            <form id="registration-form" class="p-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold theme-text mb-1">Selected Event</label>
+                    <input type="text" id="form-event-name" class="theme-input w-full px-4 py-2.5 rounded-lg opacity-70 cursor-not-allowed" readonly>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold theme-text mb-1">Full Name</label>
+                    <input type="text" id="form-name" class="theme-input w-full px-4 py-2.5 rounded-lg" placeholder="John Doe" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold theme-text mb-1">Email Address</label>
+                    <input type="email" id="form-email" class="theme-input w-full px-4 py-2.5 rounded-lg" placeholder="john@example.com" required>
+                    <p id="email-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold theme-text mb-1">Phone Number</label>
+                    <input type="tel" id="form-phone" class="theme-input w-full px-4 py-2.5 rounded-lg" placeholder="1234567890" required>
+                    <p id="phone-error" class="text-red-500 text-xs mt-1 hidden">Phone number must be exactly 10 digits.</p>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wide">
+                    Confirm Registration
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-[110] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-green-500 text-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <div>
+                <h4 class="font-bold text-sm">Registration Successful!</h4>
+                <p class="text-xs opacity-90">Your spot has been secured.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Data Source ---
+            const events = [
+                {
+                    id: 1,
+                    name: "Global Tech Summit",
+                    date: "Nov 15, 2026",
+                    venue: "Silicon Valley, CA",
+                    category: "Tech",
+                    image: "https://placehold.co/600x400/1e293b/39ff14?text=Tech+Summit",
+                    description: "Explore the future of AI, quantum computing, and Web3 with industry leaders."
+                },
+                {
+                    id: 2,
+                    name: "Neon Nights Music Festival",
+                    date: "Dec 05, 2026",
+                    venue: "Miami Beach, FL",
+                    category: "Music",
+                    image: "https://placehold.co/600x400/0f172a/0d9488?text=Neon+Nights",
+                    description: "An electrifying night of EDM, breathtaking visual arts, and endless energy."
+                },
+                {
+                    id: 3,
+                    name: "UI/UX Masterclass",
+                    date: "Jan 12, 2027",
+                    venue: "London, UK (Hybrid)",
+                    category: "Workshop",
+                    image: "https://placehold.co/600x400/334155/ffffff?text=UX+Masterclass",
+                    description: "Master user-centric design principles, prototyping, and modern design systems."
+                },
+                {
+                    id: 4,
+                    name: "CyberSecurity Con",
+                    date: "Feb 20, 2027",
+                    venue: "Virtual Arena",
+                    category: "Tech",
+                    image: "https://placehold.co/600x400/111827/39ff14?text=Cyber+Con",
+                    description: "Learn offensive security and defense mechanisms to secure tomorrow's digital frontiers."
+                },
+                {
+                    id: 5,
+                    name: "Indie Rock Revival",
+                    date: "Mar 10, 2027",
+                    venue: "Austin, TX",
+                    category: "Music",
+                    image: "https://placehold.co/600x400/1e293b/0d9488?text=Rock+Revival",
+                    description: "Celebrate grassroots music with emerging indie rock bands from around the country."
+                },
+                {
+                    id: 6,
+                    name: "React & Angular Bootcamp",
+                    date: "Apr 02, 2027",
+                    venue: "New York, NY",
+                    category: "Workshop",
+                    image: "https://placehold.co/600x400/0f172a/ffffff?text=Web+Dev+Bootcamp",
+                    description: "Intensive 3-day bootcamp covering modern frontend frameworks and state management."
+                }
+            ];
+
+            // --- 2. DOM Elements ---
+            const eventsGrid = document.getElementById('events-grid');
+            const searchInput = document.getElementById('search-input');
+            const categoryFilter = document.getElementById('category-filter');
+            const noResultsMsg = document.getElementById('no-results');
+            
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const iconSun = document.getElementById('icon-sun');
+            const iconMoon = document.getElementById('icon-moon');
+            
+            const modal = document.getElementById('registration-modal');
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const closeModalBtn = document.getElementById('close-modal');
+            const regForm = document.getElementById('registration-form');
+            const formEventName = document.getElementById('form-event-name');
+            
+            const emailInput = document.getElementById('form-email');
+            const phoneInput = document.getElementById('form-phone');
+            const emailError = document.getElementById('email-error');
+            const phoneError = document.getElementById('phone-error');
+            
+            const toast = document.getElementById('toast');
+
+            // --- 3. Rendering Logic ---
+            function renderEvents(filterText = '', filterCategory = 'All') {
+                eventsGrid.innerHTML = '';
+                
+                const filteredEvents = events.filter(event => {
+                    const matchesSearch = event.name.toLowerCase().includes(filterText.toLowerCase()) || 
+                                          event.description.toLowerCase().includes(filterText.toLowerCase());
+                    const matchesCategory = filterCategory === 'All' || event.category === filterCategory;
+                    return matchesSearch && matchesCategory;
+                });
+
+                if (filteredEvents.length === 0) {
+                    noResultsMsg.classList.remove('hidden');
+                } else {
+                    noResultsMsg.classList.add('hidden');
+                    filteredEvents.forEach(event => {
+                        const card = document.createElement('div');
+                        card.className = 'event-card theme-card border rounded-2xl overflow-hidden flex flex-col h-full';
+                        
+                        // Formatting Category Pill
+                        let catBg = 'bg-gray-200 text-gray-800';
+                        if (event.category === 'Tech') catBg = 'bg-blue-100 text-blue-800';
+                        if (event.category === 'Music') catBg = 'bg-purple-100 text-purple-800';
+                        if (event.category === 'Workshop') catBg = 'bg-orange-100 text-orange-800';
+
+                        card.innerHTML = `
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="${event.image}" alt="${event.name}" class="w-full h-full object-cover transition duration-500 hover:scale-110">
+                                <span class="absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full ${catBg}">
+                                    ${event.category}
+                                </span>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <h3 class="text-xl font-bold theme-text mb-2">${event.name}</h3>
+                                <div class="flex items-center gap-2 theme-text-muted text-sm mb-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    ${event.date}
+                                </div>
+                                <div class="flex items-center gap-2 theme-text-muted text-sm mb-4">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    ${event.venue}
+                                </div>
+                                <p class="theme-text-muted text-sm flex-grow mb-6 line-clamp-2">${event.description}</p>
+                                <button onclick="openRegistration('${event.name}')" class="btn-primary w-full py-2.5 rounded-lg font-semibold text-sm mt-auto">
+                                    Register Now
+                                </button>
+                            </div>
+                        `;
+                        eventsGrid.appendChild(card);
+                    });
+                }
+            }
+
+            // Expose function globally for the onclick handler
+            window.openRegistration = (eventName) => {
+                formEventName.value = eventName;
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            };
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                regForm.reset();
+                emailError.classList.add('hidden');
+                phoneError.classList.add('hidden');
+            }
+
+            // --- 4. Event Listeners ---
+            searchInput.addEventListener('input', () => {
+                renderEvents(searchInput.value, categoryFilter.value);
+            });
+
+            categoryFilter.addEventListener('change', () => {
+                renderEvents(searchInput.value, categoryFilter.value);
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', closeModal);
+            
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // --- 5. Theme Toggle Logic (Light/Dark) ---
+            function applyTheme(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add('dark-mode');
+                    iconSun.classList.remove('hidden');
+                    iconMoon.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                    iconSun.classList.add('hidden');
+                    iconMoon.classList.remove('hidden');
+                }
+            }
+
+            // Check Local Storage for theme preference, default to light
+            let isDarkMode = localStorage.getItem('aura_theme') === 'dark';
+            applyTheme(isDarkMode);
+
+            themeToggleBtn.addEventListener('click', () => {
+                isDarkMode = !isDarkMode;
+                applyTheme(isDarkMode);
+                localStorage.setItem('aura_theme', isDarkMode ? 'dark' : 'light');
+            });
+
+            // --- 6. Countdown Timer Logic ---
+            // Set target to Dec 31 of current year
+            const currentYear = new Date().getFullYear();
+            const targetDate = new Date(`December 31, ${currentYear} 23:59:59`).getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    document.getElementById("cd-days").innerText = "00";
+                    document.getElementById("cd-hours").innerText = "00";
+                    document.getElementById("cd-mins").innerText = "00";
+                    document.getElementById("cd-secs").innerText = "00";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("cd-days").innerText = days.toString().padStart(2, '0');
+                document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
+                document.getElementById("cd-mins").innerText = minutes.toString().padStart(2, '0');
+                document.getElementById("cd-secs").innerText = seconds.toString().padStart(2, '0');
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown(); // Initial call
+
+            // --- 7. Form Validation & Local Storage ---
+            regForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('form-name').value.trim();
+                const email = emailInput.value.trim();
+                const phone = phoneInput.value.trim();
+                const event = formEventName.value;
+
+                let isValid = true;
+
+                // Validate Email (Regex)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    emailError.classList.remove('hidden');
+                    emailInput.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    emailError.classList.add('hidden');
+                    emailInput.classList.remove('border-red-500');
+                }
+
+                // Validate Phone (Exactly 10 digits)
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    phoneError.classList.remove('hidden');
+                    phoneInput.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    phoneError.classList.add('hidden');
+                    phoneInput.classList.remove('border-red-500');
+                }
+
+                if (isValid) {
+                    // Save to Local Storage
+                    const registrationData = {
+                        id: Date.now(),
+                        name,
+                        email,
+                        phone,
+                        event,
+                        dateRegistered: new Date().toISOString()
+                    };
+
+                    let registrations = JSON.parse(localStorage.getItem('aura_registrations')) || [];
+                    registrations.push(registrationData);
+                    localStorage.setItem('aura_registrations', JSON.stringify(registrations));
+
+                    // Show Success Toast
+                    closeModal();
+                    showToast();
+                }
+            });
+
+            function showToast() {
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                toast.classList.add('toast-show');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                    toast.classList.remove('toast-show');
+                }, 3500);
+            }
+
+            // Initial Render
+            renderEvents();
+        });
+    </script>
+</body>
+</html>
